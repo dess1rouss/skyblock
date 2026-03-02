@@ -1,0 +1,11 @@
+name: skyblock
+version: '1.0'
+main: me.dess1rous.skyblock.Main
+
+commands:
+  generationVoid:
+    description: make a void
+    usage: /generationvoid
+  is:
+    description: create a island
+    usage: /is
