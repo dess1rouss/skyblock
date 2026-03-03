@@ -1,6 +1,5 @@
 package me.dess1rous.skyblock.worlds.lobby;
 
-import me.dess1rous.skyblock.worlds.VoidGeneration;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,7 +11,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,14 +21,14 @@ public class LobbyEvents implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         if (event.getPlayer().getWorld().getName().equalsIgnoreCase("world")) {
             World world = Bukkit.getWorld("lobby");
-            event.getPlayer().teleport(new Location(world, Math.random() * 100000, 60, Math.random() * 100000));
+            event.getPlayer().teleport(new Location(world, Math.random() * 100000, 0, Math.random() * 100000));
         }
-            ItemStack spawner = new ItemStack(Material.MOB_SPAWNER, 1);
-            ItemMeta meta = spawner.getItemMeta();
-            meta.setDisplayName("SkyBlock Kingdom");
-            spawner.setItemMeta(meta);
-            Inventory inv = event.getPlayer().getInventory();
-            inv.setItem(4, spawner);
+        ItemStack spawner = new ItemStack(Material.MOB_SPAWNER, 1);
+        ItemMeta meta = spawner.getItemMeta();
+        meta.setDisplayName("SkyBlock Kingdom");
+        spawner.setItemMeta(meta);
+        Inventory inv = event.getPlayer().getInventory();
+        inv.setItem(4, spawner);
     }
 
     @EventHandler
@@ -81,11 +79,5 @@ public class LobbyEvents implements Listener {
                 event.getPlayer().getInventory().clear();
             }
         }
-    }
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        World world = Bukkit.getWorld("lobby");
-        event.getPlayer().teleport(new Location(world, Math.random() * 100000, 60, Math.random() * 100000));
     }
 }

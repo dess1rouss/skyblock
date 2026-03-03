@@ -9,3 +9,6 @@ commands:
   is:
     description: create a island
     usage: /is
+  spawn:
+    description: tp spawn
+    usage: /spawn
