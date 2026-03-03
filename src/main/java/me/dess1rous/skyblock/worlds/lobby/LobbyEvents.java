@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -39,6 +41,20 @@ public class LobbyEvents implements Listener {
     }
 
     @EventHandler
+    public void breakEvent(BlockBreakEvent event) {
+        if (event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void placeEvent(BlockPlaceEvent event) {
+        if (event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void damageEvent(EntityDamageEvent event) {
         if (event.getEntity().getWorld().getName().equalsIgnoreCase("lobby")
                 || event.getEntity().getWorld().getName().equalsIgnoreCase("skyblock")
@@ -55,7 +71,12 @@ public class LobbyEvents implements Listener {
         if (event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR &&
                     event.getPlayer().getInventory().getItemInMainHand().getType() == Material.MOB_SPAWNER) {
+                event.setCancelled(true);
+
                 World world = Bukkit.getWorld("skyblock");
+
+                if (world == null) return;
+
                 event.getPlayer().teleport(new Location(world, 0.5, 60, 0.5));
                 event.getPlayer().getInventory().clear();
             }
