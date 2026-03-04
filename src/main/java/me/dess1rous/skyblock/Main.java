@@ -2,7 +2,7 @@ package me.dess1rous.skyblock;
 
 import me.dess1rous.skyblock.database.MongoManager;
 import me.dess1rous.skyblock.island.IndexCollection;
-import me.dess1rous.skyblock.island.IslandCreateCMD;
+import me.dess1rous.skyblock.island.IslandCMD;
 import me.dess1rous.skyblock.island.IslandsCollection;
 import me.dess1rous.skyblock.worlds.CreateWorlds;
 import me.dess1rous.skyblock.worlds.lobby.LobbyEvents;
@@ -28,7 +28,7 @@ public final class Main extends JavaPlugin {
 
         IslandsCollection islandsCollection = new IslandsCollection(MongoManager.getDatabase());
         IndexCollection indexCollection = new IndexCollection(MongoManager.getDatabase());
-        getServer().getPluginCommand("is").setExecutor(new IslandCreateCMD(islandsCollection, indexCollection));
+        getServer().getPluginCommand("is").setExecutor(new IslandCMD(islandsCollection, indexCollection));
         getServer().getPluginManager().registerEvents(new LobbyEvents(), this);
         getServer().getPluginManager().registerEvents(new EventsNPC(), this);
         getServer().getPluginCommand("spawn").setExecutor(new SpawnCMD());

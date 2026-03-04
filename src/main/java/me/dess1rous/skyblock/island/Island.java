@@ -2,20 +2,21 @@ package me.dess1rous.skyblock.island;
 
 import org.bukkit.Location;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Island {
 
-    private UUID uuid;
+    private UUID islandID;
     private Location location;
-    private String owner;
-    private int members;
+    private UUID owner;
+    private List<UUID> members;
     private int size;
     private int level;
     private int index;
 
-    public Island(UUID uuid, Location location, String owner, int members, int size, int level, int index) {
-        this.uuid = uuid;
+    public Island(UUID islandID, Location location, UUID owner, List<UUID> members, int size, int level, int index) {
+        this.islandID = islandID;
         this.location = location;
         this.owner = owner;
         this.members = members;
@@ -24,19 +25,19 @@ public class Island {
         this.index = index;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getIslandID() {
+        return islandID;
     }
 
     public Location getLocation() {
         return location;
     }
 
-    public String getOwner() {
+    public UUID getOwner() {
         return owner;
     }
 
-    public int getMembers() {
+    public List<UUID> getMembers() {
         return members;
     }
 

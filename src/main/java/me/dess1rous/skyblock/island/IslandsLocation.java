@@ -4,12 +4,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 public class IslandsLocation {
-    private static final int distance = 200;
+    private static final int distance = 400;
 
-    public static Location getLocation(World world, int index) {
-        if (index == 0) {
-            return new Location(world,0, 100, 0);
-        }
+    public static Location getLocationIsland(World world, int index) {
 
         int layer = (int) Math.ceil((Math.sqrt(index + 1) - 1) / 2);
         int legLen = layer * 2;
