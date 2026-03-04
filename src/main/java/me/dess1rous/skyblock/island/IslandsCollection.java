@@ -28,7 +28,7 @@ public class IslandsCollection {
         }
 
         Document docLocation = new Document()
-                .append("world", loc.getWorld())
+                .append("world", loc.getWorld().getName())
                 .append("x", loc.getBlockX())
                 .append("y", loc.getBlockY())
                 .append("z", loc.getBlockZ());
@@ -45,15 +45,15 @@ public class IslandsCollection {
     }
 
     public boolean hasIsland(UUID uuid) {
-        return islands.find(Filters.eq("_id", uuid.toString())).first() != null;
+        return islands.find(Filters.eq("owner", uuid.toString())).first() != null;
     }
 
     public void deleteIsland(UUID uuid) {
-        islands.deleteOne(Filters.eq("_id", uuid.toString()));
+        islands.deleteOne(Filters.eq("owner", uuid.toString()));
     }
 
     public Island getIsland(UUID uuid) {
-        Document doc = islands.find(Filters.eq("_id", uuid.toString())).first();
+        Document doc = islands.find(Filters.eq("owner", uuid.toString())).first();
         if (doc == null) return null;
 
         Document locationDoc = (Document) doc.get("location");
