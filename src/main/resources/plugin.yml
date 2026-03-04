@@ -1,6 +1,7 @@
 name: skyblock
 version: '${version}'
 main: me.dess1rous.skyblock.Main
+depend: [Citizens]
 
 commands:
   generationVoid:

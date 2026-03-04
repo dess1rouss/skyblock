@@ -6,6 +6,7 @@ import me.dess1rous.skyblock.island.IslandCreateCMD;
 import me.dess1rous.skyblock.island.IslandsCollection;
 import me.dess1rous.skyblock.worlds.CreateWorlds;
 import me.dess1rous.skyblock.worlds.lobby.LobbyEvents;
+import me.dess1rous.skyblock.worlds.skyblock.spawn.EventsNPC;
 import me.dess1rous.skyblock.worlds.skyblock.spawn.SpawnCMD;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,14 +24,14 @@ public final class Main extends JavaPlugin {
         CreateWorlds.createEndWorld();
 
         instance = this;
-        getServer().getPluginManager().registerEvents(new LobbyEvents(), this);
-        getServer().getPluginCommand("spawn").setExecutor(new SpawnCMD());
-
         MongoManager.connect("mongodb://localhost:27017", "myserver");
 
         IslandsCollection islandsCollection = new IslandsCollection(MongoManager.getDatabase());
         IndexCollection indexCollection = new IndexCollection(MongoManager.getDatabase());
         getServer().getPluginCommand("is").setExecutor(new IslandCreateCMD(islandsCollection, indexCollection));
+        getServer().getPluginManager().registerEvents(new LobbyEvents(), this);
+        getServer().getPluginManager().registerEvents(new EventsNPC(), this);
+        getServer().getPluginCommand("spawn").setExecutor(new SpawnCMD());
     }
 
     public static Main getInstance() {

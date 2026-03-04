@@ -1,6 +1,7 @@
 name: skyblock
 version: '1.0'
 main: me.dess1rous.skyblock.Main
+depend: [Citizens]
 
 commands:
   generationVoid:

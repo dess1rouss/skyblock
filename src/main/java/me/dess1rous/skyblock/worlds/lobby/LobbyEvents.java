@@ -1,5 +1,6 @@
 package me.dess1rous.skyblock.worlds.lobby;
 
+import me.dess1rous.skyblock.worlds.skyblock.spawn.SpawnNPC;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +20,10 @@ public class LobbyEvents implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        if (event.getPlayer().getWorld().getName().equalsIgnoreCase("world")) {
+        if (event.getPlayer().getWorld().getName().equalsIgnoreCase("world")
+        || event.getPlayer().getWorld().getName().equalsIgnoreCase("skyblock")
+        || event.getPlayer().getWorld().getName().equalsIgnoreCase("nether")
+        || event.getPlayer().getWorld().getName().equalsIgnoreCase("end")) {
             World world = Bukkit.getWorld("lobby");
             event.getPlayer().teleport(new Location(world, Math.random() * 100000, 0, Math.random() * 100000));
         }
@@ -77,6 +81,7 @@ public class LobbyEvents implements Listener {
 
                 event.getPlayer().teleport(new Location(world, 0.5, 60, 0.5));
                 event.getPlayer().getInventory().clear();
+                SpawnNPC.spawnNPC();
             }
         }
     }
