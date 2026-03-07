@@ -9,15 +9,17 @@ public class Island {
 
     private UUID islandID;
     private Location location;
+    private String name;
     private UUID owner;
     private List<UUID> members;
     private int size;
     private int level;
     private int index;
 
-    public Island(UUID islandID, Location location, UUID owner, List<UUID> members, int size, int level, int index) {
+    public Island(UUID islandID, Location location, String name, UUID owner, List<UUID> members, int size, int level, int index) {
         this.islandID = islandID;
         this.location = location;
+        this.name = name;
         this.owner = owner;
         this.members = members;
         this.size = size;
@@ -31,6 +33,14 @@ public class Island {
 
     public Location getLocation() {
         return location;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public UUID getOwner() {

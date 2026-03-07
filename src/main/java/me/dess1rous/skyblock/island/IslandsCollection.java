@@ -1,8 +1,10 @@
 package me.dess1rous.skyblock.island;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.ReplaceOptions;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -36,12 +38,17 @@ public class IslandsCollection {
         Document doc = new Document()
                 .append("_id", island.getIslandID().toString())
                 .append("location", docLocation)
+                .append("name", island.getName())
                 .append("owner", island.getOwner().toString())
                 .append("players", membersString)
                 .append("size", island.getSize())
                 .append("level", island.getLevel())
                 .append("index", island.getIndex());
-        islands.insertOne(doc);
+        islands.replaceOne(
+                Filters.eq("_id", island.getIslandID().toString()),
+                doc,
+                new ReplaceOptions().upsert(true)
+        );
     }
 
     public boolean hasIsland(UUID uuid) {
@@ -77,6 +84,7 @@ public class IslandsCollection {
         return new Island(
                 UUID.fromString(doc.getString("_id")),
                 location,
+                doc.getString("name"),
                 UUID.fromString(doc.getString("owner")),
                 members,
                 doc.getInteger("size"),

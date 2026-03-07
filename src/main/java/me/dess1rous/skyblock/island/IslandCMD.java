@@ -100,6 +100,23 @@ public class IslandCMD implements CommandExecutor {
                     return true;
 
                 }
+
+            case "name":
+                if (strings.length == 1) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l/is name NAME_OF_ISLAND"));
+                    return true;
+                }
+
+                if (strings[1].length() > 10
+                || strings[1].length() < 4) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lНедопустимое количество символов"));
+                    return true;
+                }
+
+                Island island = islandsCollection.getIsland(player.getUniqueId());
+
+                island.setName(strings[1]);
+                islandsCollection.save(island);
                 return true;
         }
         return false;
@@ -120,6 +137,7 @@ public class IslandCMD implements CommandExecutor {
         Island island = new Island(
                 UUID.randomUUID(),
                 location,
+                ChatColor.translateAlternateColorCodes('&', "&c" + player.getName()),
                 player.getUniqueId(),
                 new ArrayList<>(),
                 150,
