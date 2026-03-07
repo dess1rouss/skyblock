@@ -23,10 +23,9 @@ public class IslandsCollection {
     public void save(Island island) {
         Location loc = island.getLocation();
 
-        List<String> membersString = new ArrayList<>();
-
+        List<String> membersUUID = new ArrayList<>();
         for (UUID uuid : island.getMembers()) {
-            membersString.add(uuid.toString());
+            membersUUID.add(uuid.toString());
         }
 
         Document docLocation = new Document()
@@ -40,7 +39,7 @@ public class IslandsCollection {
                 .append("location", docLocation)
                 .append("name", island.getName())
                 .append("owner", island.getOwner().toString())
-                .append("players", membersString)
+                .append("players", membersUUID)
                 .append("size", island.getSize())
                 .append("level", island.getLevel())
                 .append("index", island.getIndex());
@@ -91,5 +90,46 @@ public class IslandsCollection {
                 doc.getInteger("level"),
                 doc.getInteger("index")
         );
+    }
+
+    public List<Island> getTopIslands() {
+        List<Island> islandsList = new ArrayList<>();
+
+        FindIterable<Document> docs = islands
+                .find()
+                .sort(new Document("level", -1))
+                .limit(10);
+
+        for (Document doc : docs) {
+            Document locationDoc = (Document) doc.get("location");
+            Location location = new Location(
+                    Bukkit.getWorld(locationDoc.getString("world")),
+                    locationDoc.getInteger("x"),
+                    locationDoc.getInteger("y"),
+                    locationDoc.getInteger("z")
+            );
+
+            List<String> membersString = doc.getList("players", String.class);
+            List<UUID> members = new ArrayList<>();
+
+            if (membersString != null) {
+                for (String s : membersString) {
+                    members.add(UUID.fromString(s));
+                }
+            }
+
+            Island island = new Island(
+                    UUID.fromString(doc.getString("_id")),
+                    location,
+                    doc.getString("name"),
+                    UUID.fromString(doc.getString("owner")),
+                    members,
+                    doc.getInteger("size"),
+                    doc.getInteger("level"),
+                    doc.getInteger("index")
+            );
+            islandsList.add(island);
+        }
+        return islandsList;
     }
 }

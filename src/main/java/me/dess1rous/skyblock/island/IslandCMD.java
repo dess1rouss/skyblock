@@ -4,15 +4,17 @@ import me.dess1rous.skyblock.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class IslandCMD implements CommandExecutor {
     private final IslandsCollection islandsCollection;
@@ -117,6 +119,54 @@ public class IslandCMD implements CommandExecutor {
 
                 island.setName(strings[1]);
                 islandsCollection.save(island);
+                return true;
+
+            case "top":
+                Material[] materials = {
+                        Material.DIAMOND_AXE,
+                        Material.GOLD_AXE,
+                        Material.IRON_AXE,
+                        Material.DIAMOND_BLOCK,
+                        Material.GOLD_BLOCK,
+                        Material.IRON_BLOCK,
+                        Material.DIAMOND_ORE,
+                        Material.GOLD_ORE,
+                        Material.IRON_ORE,
+                        Material.REDSTONE_ORE
+                };
+                int[] slots = {
+                        4,
+                        12,14,
+                        19,20,21,22,23,24,25
+                };
+
+                Inventory invTop = Bukkit.createInventory(null, 27, "Топ 10 островов");
+                List<Island> top = islandsCollection.getTopIslands();
+
+                for (int i = 0; i < top.size(); i++) {
+                    Island islandTop = top.get(i);
+                    ItemStack item = new ItemStack(materials[i]);
+                    ItemMeta meta = item.getItemMeta();
+
+                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
+                            "&a&lОстров: &c" + islandTop.getName() + " &7(#" + (i+1) + ")"));
+
+                    List<String> lore = new ArrayList<>();
+
+                    lore.add(ChatColor.translateAlternateColorCodes('&', "§7&l▪ Уровень острова " + islandTop.getLevel()));
+                    lore.add("");
+                    for (UUID member : islandTop.getMembers()) {
+                        String name = Bukkit.getOfflinePlayer(member).getName();
+                        lore.add(ChatColor.translateAlternateColorCodes('&', "&b" + name));
+                    }
+                    meta.setLore(lore);
+                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                    item.setItemMeta(meta);
+
+                    invTop.setItem(slots[i], item);
+                }
+                player.openInventory(invTop);
+
                 return true;
         }
         return false;
