@@ -1,4 +1,4 @@
-package me.dess1rous.skyblock.island;
+package me.dess1rous.skyblock.worlds.skyblock.island;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -24,8 +24,13 @@ public class IslandsCollection {
         Location loc = island.getLocation();
 
         List<String> membersUUID = new ArrayList<>();
-        for (UUID uuid : island.getMembers()) {
-            membersUUID.add(uuid.toString());
+
+        if (island.getMembers().isEmpty()) {
+            membersUUID.add(island.getOwner().toString());
+        } else {
+            for (UUID uuid : island.getMembers()) {
+                membersUUID.add(uuid.toString());
+            }
         }
 
         Document docLocation = new Document()
@@ -51,7 +56,7 @@ public class IslandsCollection {
     }
 
     public boolean hasIsland(UUID uuid) {
-        return islands.find(Filters.eq("owner", uuid.toString())).first() != null;
+        return islands.find(Filters.eq("players", uuid.toString())).first() != null;
     }
 
     public void deleteIsland(UUID uuid) {
@@ -59,7 +64,7 @@ public class IslandsCollection {
     }
 
     public Island getIsland(UUID uuid) {
-        Document doc = islands.find(Filters.eq("owner", uuid.toString())).first();
+        Document doc = islands.find(Filters.eq("players", uuid.toString())).first();
         if (doc == null) return null;
 
         Document locationDoc = (Document) doc.get("location");

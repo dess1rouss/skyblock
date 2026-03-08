@@ -1,13 +1,15 @@
 package me.dess1rous.skyblock;
 
 import me.dess1rous.skyblock.database.MongoManager;
-import me.dess1rous.skyblock.island.IndexCollection;
-import me.dess1rous.skyblock.island.IslandCMD;
-import me.dess1rous.skyblock.island.IslandsCollection;
+import me.dess1rous.skyblock.worlds.skyblock.island.IndexCollection;
+import me.dess1rous.skyblock.worlds.skyblock.island.IslandCMD;
+import me.dess1rous.skyblock.worlds.skyblock.island.IslandsCollection;
 import me.dess1rous.skyblock.worlds.CreateWorlds;
 import me.dess1rous.skyblock.worlds.lobby.LobbyEvents;
+import me.dess1rous.skyblock.worlds.skyblock.island.top.TopEvents;
 import me.dess1rous.skyblock.worlds.skyblock.spawn.EventsNPC;
 import me.dess1rous.skyblock.worlds.skyblock.spawn.SpawnCMD;
+import me.dess1rous.skyblock.worlds.skyblock.spawn.SpawnNPC;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
@@ -22,6 +24,8 @@ public final class Main extends JavaPlugin {
         CreateWorlds.createSkyBlockWorld();
         CreateWorlds.createNetherWorld();
         CreateWorlds.createEndWorld();
+        SpawnNPC.deleteNPC();
+        SpawnNPC.spawnNPC();
 
         instance = this;
         MongoManager.connect("mongodb://localhost:27017", "myserver");
@@ -31,6 +35,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginCommand("is").setExecutor(new IslandCMD(islandsCollection, indexCollection));
         getServer().getPluginManager().registerEvents(new LobbyEvents(), this);
         getServer().getPluginManager().registerEvents(new EventsNPC(), this);
+        getServer().getPluginManager().registerEvents(new TopEvents(), this);
         getServer().getPluginCommand("spawn").setExecutor(new SpawnCMD());
     }
 
@@ -41,5 +46,6 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         MongoManager.close();
+        SpawnNPC.deleteNPC();
     }
 }

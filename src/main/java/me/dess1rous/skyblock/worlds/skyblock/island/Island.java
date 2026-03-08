@@ -1,4 +1,4 @@
-package me.dess1rous.skyblock.island;
+package me.dess1rous.skyblock.worlds.skyblock.island;
 
 import org.bukkit.Location;
 

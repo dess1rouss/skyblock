@@ -1,6 +1,5 @@
 package me.dess1rous.skyblock.worlds.lobby;
 
-import me.dess1rous.skyblock.worlds.skyblock.spawn.SpawnNPC;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -81,7 +80,6 @@ public class LobbyEvents implements Listener {
 
                 event.getPlayer().teleport(new Location(world, 0.5, 60, 0.5));
                 event.getPlayer().getInventory().clear();
-                SpawnNPC.spawnNPC();
             }
         }
     }

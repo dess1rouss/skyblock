@@ -1,18 +1,14 @@
-package me.dess1rous.skyblock.island;
+package me.dess1rous.skyblock.worlds.skyblock.island;
 
 import me.dess1rous.skyblock.Main;
+import me.dess1rous.skyblock.worlds.skyblock.island.top.TopManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -46,7 +42,7 @@ public class IslandCMD implements CommandExecutor {
 
             case "create":
                 if (islandsCollection.getIsland(player.getUniqueId()) != null) {
-                    player.sendMessage(ChatColor.RED + "Уже есть остров");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cУже есть остров"));
                     return true;
                 }
                 createIsland(player);
@@ -57,19 +53,19 @@ public class IslandCMD implements CommandExecutor {
                     teleportIsland(player);
                     return true;
                 } else {
-                    player.sendMessage("Создайте остров");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cСоздайте остров"));
                     return true;
                 }
 
             case "delete":
                 if (islandsCollection.getIsland(player.getUniqueId()) == null) {
-                    player.sendMessage("Нету острова чтоб удалить");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cНету острова чтоб удалить"));
                     return true;
                 }
 
                 if (strings.length == 1) {
                     deleteConfirm.add(player.getUniqueId());
-                    player.sendMessage(ChatColor.DARK_RED + "Для подтверждения " + ChatColor.ITALIC + "/is delete confirm");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3Для подтверждения &l/is delete confirm"));
 
                     Bukkit.getScheduler().runTaskLater(
                             Main.getInstance(),
@@ -81,7 +77,7 @@ public class IslandCMD implements CommandExecutor {
 
                 if (strings[1].equalsIgnoreCase("confirm")) {
                     if (!deleteConfirm.contains(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "Сначала /is delete");
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cСначала /is delete"));
                         return true;
                     }
 
@@ -122,51 +118,8 @@ public class IslandCMD implements CommandExecutor {
                 return true;
 
             case "top":
-                Material[] materials = {
-                        Material.DIAMOND_AXE,
-                        Material.GOLD_AXE,
-                        Material.IRON_AXE,
-                        Material.DIAMOND_BLOCK,
-                        Material.GOLD_BLOCK,
-                        Material.IRON_BLOCK,
-                        Material.DIAMOND_ORE,
-                        Material.GOLD_ORE,
-                        Material.IRON_ORE,
-                        Material.REDSTONE_ORE
-                };
-                int[] slots = {
-                        4,
-                        12,14,
-                        19,20,21,22,23,24,25
-                };
 
-                Inventory invTop = Bukkit.createInventory(null, 27, "Топ 10 островов");
-                List<Island> top = islandsCollection.getTopIslands();
-
-                for (int i = 0; i < top.size(); i++) {
-                    Island islandTop = top.get(i);
-                    ItemStack item = new ItemStack(materials[i]);
-                    ItemMeta meta = item.getItemMeta();
-
-                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                            "&a&lОстров: &c" + islandTop.getName() + " &7(#" + (i+1) + ")"));
-
-                    List<String> lore = new ArrayList<>();
-
-                    lore.add(ChatColor.translateAlternateColorCodes('&', "§7&l▪ Уровень острова " + islandTop.getLevel()));
-                    lore.add("");
-                    for (UUID member : islandTop.getMembers()) {
-                        String name = Bukkit.getOfflinePlayer(member).getName();
-                        lore.add(ChatColor.translateAlternateColorCodes('&', "&b" + name));
-                    }
-                    meta.setLore(lore);
-                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                    item.setItemMeta(meta);
-
-                    invTop.setItem(slots[i], item);
-                }
-                player.openInventory(invTop);
-
+                TopManager.createTop(islandsCollection, player);
                 return true;
         }
         return false;
@@ -184,12 +137,15 @@ public class IslandCMD implements CommandExecutor {
         PasteIslands paste = new PasteIslands();
         paste.pasteIsland(location);
 
+        List<UUID> members = new ArrayList<>();
+        members.add(player.getUniqueId());
+
         Island island = new Island(
                 UUID.randomUUID(),
                 location,
                 ChatColor.translateAlternateColorCodes('&', "&c" + player.getName()),
                 player.getUniqueId(),
-                new ArrayList<>(),
+                members,
                 150,
                 0,
                 index
@@ -197,7 +153,8 @@ public class IslandCMD implements CommandExecutor {
 
         islandsCollection.save(island);
         player.teleport(location.clone().add(0, 1, 0));
-        player.sendTitle(ChatColor.GREEN + "Остров " + player.getName(), "Успешно создан", 2, 2, 2);
+        player.sendTitle(ChatColor.translateAlternateColorCodes('&', "Остров " + player.getName()),
+                ChatColor.translateAlternateColorCodes('&', "Успешно создан"), 4, 2, 4);
     }
 
     private void teleportIsland(Player player) {

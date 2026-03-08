@@ -1,10 +1,9 @@
-package me.dess1rous.skyblock.island;
+package me.dess1rous.skyblock.worlds.skyblock.island;
 
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldedit.world.DataException;
-import com.sk89q.worldedit.world.World;
 import org.bukkit.Location;
 
 import java.io.File;
