@@ -25,6 +25,7 @@ public class LobbyEvents implements Listener {
         || event.getPlayer().getWorld().getName().equalsIgnoreCase("end")) {
             World world = Bukkit.getWorld("lobby");
             event.getPlayer().teleport(new Location(world, Math.random() * 100000, 0, Math.random() * 100000));
+            event.getPlayer().getInventory().clear();
         }
         ItemStack spawner = new ItemStack(Material.MOB_SPAWNER, 1);
         ItemMeta meta = spawner.getItemMeta();
@@ -59,8 +60,7 @@ public class LobbyEvents implements Listener {
     public void damageEvent(EntityDamageEvent event) {
         if (event.getEntity().getWorld().getName().equalsIgnoreCase("lobby")
                 || event.getEntity().getWorld().getName().equalsIgnoreCase("skyblock")
-                || event.getEntity().getWorld().getName().equalsIgnoreCase("nether")
-                || event.getEntity().getWorld().getName().equalsIgnoreCase("end")) {
+                || event.getEntity().getWorld().getName().equalsIgnoreCase("nether")) {
             if (event.getEntity() instanceof Player) {
                 event.setCancelled(true);
             }

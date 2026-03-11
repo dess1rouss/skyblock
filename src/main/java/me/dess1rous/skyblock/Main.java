@@ -9,6 +9,7 @@ import me.dess1rous.skyblock.worlds.lobby.LobbyEvents;
 import me.dess1rous.skyblock.worlds.skyblock.island.top.TopEvents;
 import me.dess1rous.skyblock.worlds.skyblock.spawn.EventsNPC;
 import me.dess1rous.skyblock.worlds.skyblock.spawn.SpawnCMD;
+import me.dess1rous.skyblock.worlds.end.EndEvents;
 import me.dess1rous.skyblock.worlds.skyblock.spawn.SpawnNPC;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,6 +37,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new LobbyEvents(), this);
         getServer().getPluginManager().registerEvents(new EventsNPC(), this);
         getServer().getPluginManager().registerEvents(new TopEvents(), this);
+        getServer().getPluginManager().registerEvents(new EndEvents(), this);
         getServer().getPluginCommand("spawn").setExecutor(new SpawnCMD());
     }
 

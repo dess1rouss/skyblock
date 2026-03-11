@@ -16,6 +16,7 @@ public class IslandCMD implements CommandExecutor {
     private final IslandsCollection islandsCollection;
     private final IndexCollection indexCollection;
     private final Set<UUID> deleteConfirm = new HashSet<>();
+    public static HashMap<UUID, Invite> invites = new HashMap<>();
 
     public IslandCMD(IslandsCollection islandsCollection, IndexCollection indexCollection) {
         this.islandsCollection = islandsCollection;
@@ -58,8 +59,16 @@ public class IslandCMD implements CommandExecutor {
                 }
 
             case "delete":
-                if (islandsCollection.getIsland(player.getUniqueId()) == null) {
+
+                Island isForDelete = islandsCollection.getIsland(player.getUniqueId());
+
+                if (isForDelete == null) {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cНету острова чтоб удалить"));
+                    return true;
+                }
+
+                if (!isForDelete.getOwner().equals(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lВы не создатель острова"));
                     return true;
                 }
 
@@ -85,8 +94,8 @@ public class IslandCMD implements CommandExecutor {
 
                     PasteIslands paste = new PasteIslands();
                     paste.deleteIsland(
-                            islandsCollection.getIsland(player.getUniqueId()).getLocation(),
-                            islandsCollection.getIsland(player.getUniqueId()).getSize()
+                            isForDelete.getLocation(),
+                            isForDelete.getSize()
                     );
                     islandsCollection.deleteIsland(player.getUniqueId());
                     player.teleport(new Location(
@@ -111,15 +120,163 @@ public class IslandCMD implements CommandExecutor {
                     return true;
                 }
 
-                Island island = islandsCollection.getIsland(player.getUniqueId());
+                Island isForName = islandsCollection.getIsland(player.getUniqueId());
 
-                island.setName(strings[1]);
-                islandsCollection.save(island);
+                isForName.setName(strings[1]);
+                islandsCollection.save(isForName);
                 return true;
 
             case "top":
 
                 TopManager.createTop(islandsCollection, player);
+                return true;
+
+            case "invite":
+                if (strings.length != 2) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l/is invite NICK_OF_PLAYER"));
+                    return true;
+                }
+
+                Island isForInvite = islandsCollection.getIsland(player.getUniqueId());
+
+                if (isForInvite == null) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lУ вас нет острова"));
+                    return true;
+                }
+
+                if (!isForInvite.getOwner().equals(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lВы не создатель острова"));
+                    return true;
+                }
+
+                Player recipient = Bukkit.getPlayer(strings[1]);
+
+                if (recipient == null) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lИгрок не найден"));
+                    return true;
+                }
+
+                if (recipient == player) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lВы уже есть на острове"));
+                    return true;
+                }
+
+                Island isRecipient = islandsCollection.getIsland(recipient.getUniqueId());
+
+                if (isRecipient != null) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lИгрок уже состоит в другом острове"));
+                    return true;
+                }
+
+                if (invites.containsKey(recipient.getUniqueId())) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lИгроку уже отправлено приглашение"));
+                    return true;
+                }
+
+                invites.put(recipient.getUniqueId(), new Invite(player.getUniqueId()));
+
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&lВы отправили приглашение"));
+                recipient.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&l" + player.getName() + " пригласил вас на остров"));
+                recipient.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&l/is accept для принятия"));
+                recipient.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lВнимание! &eПри соглашении вы потеряете свой остров"));
+
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                    if (invites.containsKey(recipient.getUniqueId())) {
+                        invites.remove(recipient.getUniqueId());
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lПриглашение истекло"));
+                        recipient.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lПриглашение истекло"));
+                    }
+                }, 20 * 30);
+                return true;
+
+            case "accept":
+                if (!invites.containsKey(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lУ вас нет приглашений"));
+                    return true;
+                }
+                Invite invite = invites.get(player.getUniqueId());
+                invites.remove(player.getUniqueId());
+                Player owner = Bukkit.getPlayer(invite.getOwner());
+
+                if (owner == null) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lСоздатель острова не в сети"));
+                    return true;
+                }
+
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&lВы приняли приглашение"));
+
+                Island isForAdd = islandsCollection.getIsland(owner.getUniqueId());
+                isForAdd.getMembers().add(player.getUniqueId());
+                islandsCollection.save(isForAdd);
+
+                return true;
+
+            case "kick":
+                if (strings.length != 2) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l/is kick NICK_OF_PLAYER"));
+                    return true;
+                }
+
+                Island isForKick = islandsCollection.getIsland(player.getUniqueId());
+
+                if (isForKick == null) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lУ вас нет острова"));
+                    return true;
+                }
+
+                if (!isForKick.getOwner().equals(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lВы не создатель острова"));
+                    return true;
+                }
+
+                UUID expelUUID = null;
+
+                for (UUID member : isForKick.getMembers()) {
+                    if (Bukkit.getOfflinePlayer(member).getName() != null
+                    && Bukkit.getOfflinePlayer(member).getName().equalsIgnoreCase(strings[1])) {
+                        expelUUID = member;
+                        break;
+                    }
+                }
+
+                if (expelUUID == null) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lИгрок не на вашем острове"));
+                    return true;
+                }
+
+                isForKick.getMembers().remove(expelUUID);
+                islandsCollection.save(isForKick);
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&lИгрок выгнан с острова"));
+
+                return true;
+
+            case "leave":
+                if (strings.length != 1) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lНеизвестная команда"));
+                    return true;
+                }
+
+                Island isForLeave = islandsCollection.getIsland(player.getUniqueId());
+
+                if (isForLeave == null) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lУ вас нет острова"));
+                    return true;
+                }
+
+                if (isForLeave.getOwner().equals(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lВы создатель острова"));
+                    return true;
+                }
+
+                isForLeave.getMembers().remove(player.getUniqueId());
+                islandsCollection.save(isForLeave);
+                player.teleport(new Location(
+                        Bukkit.getWorld("skyblock"),
+                        0.5,
+                        60,
+                        0.5));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&lУспешно"));
+
                 return true;
         }
         return false;

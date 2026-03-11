@@ -9,7 +9,8 @@ public class TopEvents implements Listener {
     @EventHandler
     public void onInventoryTop(InventoryClickEvent event) {
         if (!event.getWhoClicked().getWorld().getName().equalsIgnoreCase("skyblock")) return;
-        if (!event.getInventory().getName().equalsIgnoreCase("Топ 10 островов")) return;
+        if (!event.getInventory().getName().equalsIgnoreCase("Топ 10 островов")
+        && !(event.getInventory().getHolder() == null)) return;
 
         event.setCancelled(true);
     }
