@@ -306,7 +306,6 @@ public class IslandCMD implements CommandExecutor {
         return false;
     }
 
-
     private void createIsland(Player player) {
         int index =  indexCollection.incrementIndex();
 
