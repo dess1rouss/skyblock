@@ -123,7 +123,7 @@ public class IslandCMD implements CommandExecutor {
                 }
 
                 island.setName(strings[1]);
-                islandsCollection.save(island);
+                islandsCollection.saveIsland(island);
                 return true;
 
             case "top":
@@ -206,7 +206,7 @@ public class IslandCMD implements CommandExecutor {
 
                 Island ownerIsland = islandsCollection.getIsland(owner.getUniqueId());
                 ownerIsland.getMembers().add(uuid);
-                islandsCollection.save(ownerIsland);
+                islandsCollection.saveIsland(ownerIsland);
 
                 return true;
 
@@ -242,7 +242,7 @@ public class IslandCMD implements CommandExecutor {
                 }
 
                 island.getMembers().remove(expelUUID);
-                islandsCollection.save(island);
+                islandsCollection.saveIsland(island);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&lИгрок выгнан с острова"));
 
                 return true;
@@ -264,7 +264,7 @@ public class IslandCMD implements CommandExecutor {
                 }
 
                 island.getMembers().remove(uuid);
-                islandsCollection.save(island);
+                islandsCollection.saveIsland(island);
                 player.teleport(new Location(
                         Bukkit.getWorld("skyblock"),
                         0.5,
@@ -331,7 +331,7 @@ public class IslandCMD implements CommandExecutor {
                 index
         );
 
-        islandsCollection.save(island);
+        islandsCollection.saveIsland(island);
         player.teleport(location.clone().add(0, 1, 0));
         player.sendTitle(ChatColor.translateAlternateColorCodes('&', "Остров " + player.getName()),
                 ChatColor.translateAlternateColorCodes('&', "Успешно создан"), 4, 2, 4);

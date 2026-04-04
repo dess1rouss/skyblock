@@ -20,7 +20,7 @@ public class IslandsCollection {
         this.islands = database.getCollection("islands");
     }
 
-    public void save(Island island) {
+    public void saveIsland(Island island) {
         Location loc = island.getLocation();
 
         List<String> membersUUID = new ArrayList<>();

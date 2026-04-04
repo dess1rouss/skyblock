@@ -13,3 +13,6 @@ commands:
   spawn:
     description: tp spawn
     usage: /spawn
+  shop:
+    description: open shop
+    usage: /shop

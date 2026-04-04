@@ -1,5 +1,8 @@
 package me.dess1rous.skyblock.worlds.lobby;
 
+import me.dess1rous.skyblock.Main;
+import me.dess1rous.skyblock.worlds.skyblock.economic.MoneyCollection;
+import me.dess1rous.skyblock.worlds.skyblock.scoreboard.ScoreboardManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -80,7 +84,14 @@ public class LobbyEvents implements Listener {
 
                 event.getPlayer().teleport(new Location(world, 0.5, 60, 0.5));
                 event.getPlayer().getInventory().clear();
+                MoneyCollection.loadMoney(event.getPlayer().getUniqueId());
+                ScoreboardManager.createScoreboard(event.getPlayer());
             }
         }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        MoneyCollection.unloadMoney(event.getPlayer().getUniqueId());
     }
 }
